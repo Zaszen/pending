@@ -27,6 +27,10 @@ if (bundleProd) {
         new WriteAssetsWebpackPlugin({
             force: true, extension: ['js', 'css']
     }));
+
+    plugins.push(
+        new webpack.HotModuleReplacementPlugin()
+    );
 }
 
 module.exports = {
@@ -49,7 +53,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.js$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader'
             },
