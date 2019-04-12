@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import Grid from '../Grid/Grid'
 
-let flatGrid = [...Array(6)].map(e => Array(6));
+let flatGrid = [...Array(6).fill("")].map(e => Array(6).fill(""));
 
 const GridContainer = props =>{
 

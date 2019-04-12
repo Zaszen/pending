@@ -2,9 +2,11 @@ import React from 'react';
 
 import Cell  from '../Cell/Cell';
 
+require('./Grid.less');
+
 const Grid = props =>{
     return(
-        <div>
+        <div className="grid">
             {
                 props.grid.map((row,rowIndex) => {
                     
@@ -14,7 +16,9 @@ const Grid = props =>{
                             row.map((cell, cellIndex) => {
                                 return (
                                     <div key={"cell-row-"+rowIndex+"-cell"+cellIndex} >
-                                        {cell}
+                                        <Cell
+                                            
+                                        />
                                     </div>
                                 )
                             })
