@@ -17,7 +17,7 @@ const Grid = props =>{
                                 return (
                                     <div key={"cell-row-"+rowIndex+"-cell"+cellIndex} >
                                         <Cell
-                                            
+                                            cell={cell}
                                         />
                                     </div>
                                 )
