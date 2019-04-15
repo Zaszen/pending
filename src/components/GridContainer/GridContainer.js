@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Grid from '../Grid/Grid'
 
 const gridSize = 10;
-const bombNumber = 15; 
+const bombNumber = 100; 
 
 let cpt = 0;
 
@@ -72,14 +72,23 @@ const arrayCreateGrid = () =>{
 const GridContainer = props => {
 
     const [grid, setGrid] = useState([...arrayCreateGrid()]);
+    const [stateOfGame, setStateOfGame] = useState({victory: 0, defeat: 0, win: false, loss: false});
 
     const revealCell = (col, row) => {
+
         let tempGrid = [...grid];
+        
         tempGrid[col][row] = {exposed: true, value: tempGrid[col][row].value}; 
 
-        if(tempGrid[col][row].value === "0")
+        if (tempGrid[col][row].value === "0"){
             propagateReveal(tempGrid, col,row);
 
+        } else if(tempGrid[col][row].value === "X"){
+            let tempStateOfGame = {...stateOfGame};
+            tempStateOfGame.loss = true;
+            setStateOfGame(tempStateOfGame);
+            
+        }
         setGrid(tempGrid);
     };
 
@@ -138,6 +147,8 @@ const GridContainer = props => {
         <Grid 
             grid={grid}
             revealCell={revealCell}
+            stateOfGame={stateOfGame}
+            setStateOfGame={setStateOfGame}
         />  
     );
 }
