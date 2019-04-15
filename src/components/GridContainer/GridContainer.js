@@ -9,7 +9,7 @@ const bombNumber = 15;
 let cpt = 0;
 
 const arrayCreateGrid = () =>{
-    let tempGrid = [...Array(gridSize).fill("")].map(e => Array(gridSize).fill({exposed: false, value:""}));
+    let tempGrid = [...Array(gridSize).fill("")].map(e => Array(gridSize).fill({exposed: false, value:"0"}));
 
     //adding bomb
     while(cpt < bombNumber){
@@ -76,8 +76,63 @@ const GridContainer = props => {
     const revealCell = (col, row) => {
         let tempGrid = [...grid];
         tempGrid[col][row] = {exposed: true, value: tempGrid[col][row].value}; 
+
+        if(tempGrid[col][row].value === "0")
+            propagateReveal(tempGrid, col,row);
+
         setGrid(tempGrid);
-    }
+    };
+
+    const propagateReveal = (grid, col, row) =>{
+
+        //8
+        if(row > 0 && !grid[col][row-1].exposed){
+            grid[col][row-1] = {exposed: true, value: grid[col][row-1].value};
+            grid[col][row-1].value === "0" && propagateReveal(grid, col, row-1);
+        }
+        
+        //9
+        if(col < gridSize-1 && row > 0 && !grid[col+1][row-1].exposed){
+            grid[col+1][row-1] = {exposed: true, value: grid[col+1][row-1].value};
+            grid[col+1][row-1].value === "0" && propagateReveal(grid, col+1, row-1);
+        }    
+        
+        //6
+        if(col < gridSize-1 && !grid[col+1][row].exposed){
+            grid[col+1][row] = {exposed: true, value: grid[col+1][row].value};
+            grid[col+1][row].value === "0" && propagateReveal(grid, col+1, row);
+        }
+
+        //3    
+        if(col < gridSize-1 && row < gridSize-1 && !grid[col+1][row+1].exposed){
+            grid[col+1][row+1] = {exposed: true, value: grid[col+1][row+1].value};
+            grid[col+1][row+1].value === "0" && propagateReveal(grid, col+1, row+1);
+        }
+        
+        //2
+        if(row < gridSize-1 && !grid[col][row+1].exposed){
+            grid[col][row+1] = {exposed: true, value: grid[col][row+1].value}
+            grid[col][row+1].value === "0" && propagateReveal(grid, col, row+1);
+        }
+        
+        //1
+        if( col > 0 && row < gridSize-1 && !grid[col-1][row+1].exposed){
+            grid[col-1][row+1] = {exposed: true, value: grid[col-1][row+1].value};
+            grid[col-1][row+1].value === "0" && propagateReveal(grid, col-1, row+1);
+        }
+        
+        //4
+        if(col > 0 && !grid[col-1][row].exposed){
+            grid[col-1][row] = {exposed: true, value: grid[col-1][row].value};
+            grid[col-1][row].value === "0" && propagateReveal(grid, col-1, row);
+        }
+        
+        //7
+        if(col > 0 && row > 0 && !grid[col-1][row-1].exposed){
+            grid[col-1][row-1] = {exposed: true, value: grid[col-1][row-1].value};
+            grid[col-1][row-1].value === "0"  && propagateReveal(grid, col-1, row-1);
+        }
+    };
 
     return(
         <Grid 
