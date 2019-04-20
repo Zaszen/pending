@@ -3,8 +3,8 @@ import { useState } from 'react';
 
 import Grid from '../Grid/Grid'
 
-const gridSize = 2;
-const bombNumber = 1; 
+const gridSize = 10;
+const bombNumber = 15; 
 
 
 const GridContainer = props => {
@@ -166,6 +166,12 @@ const GridContainer = props => {
                 return cell.exposed && cell.value !== "X"
             })
         })
+
+        if(onlyBombLeft){
+            let tempStateOfGame = {...stateOfGame};
+            tempStateOfGame.win = true;
+            setStateOfGame(tempStateOfGame);
+        }
         console.log("onlyBombLeft: ", onlyBombLeft);
     }
     const [grid, setGrid] = useState([...newGrid()]);
