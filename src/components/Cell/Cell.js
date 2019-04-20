@@ -10,14 +10,24 @@ const Cell = React.memo(props =>{
             props.revealCell(col, row);
         }
     }
-    
+
+    const getCellClassName = () =>{
+        let cellClassName = "cell";
+
+        if(props.cell === "0"){
+            cellClassName+= " empty"
+        }
+        
+        return cellClassName;
+    }
+
     return(
         <div 
-            className="cell" 
+            className={getCellClassName()} 
             onClick={()=>handleClickCell(props.col, props.row)}
         >
             <div className="cell-content">
-                {props.cell}
+                {props.cell !== "0" ? props.cell: ""}
             </div>
         </div>    
     );

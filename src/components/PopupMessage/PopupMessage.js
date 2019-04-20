@@ -5,15 +5,15 @@ require('./PopupMessage.less');
 
 const PopupMessage = props =>{
 
-    const handleClickOk = () =>{
-        
+    const handleClickPlayAgain = () =>{
+        props.playAgain();
     }
     
     return(
         <div className="modal">
             <div id="popup-message">
                 <div className="popup-message">{props.message}</div>
-                <button id="bt-play-again">Play Again</button>
+                <button id="bt-play-again" onClick={handleClickPlayAgain}>Play Again</button>
             </div>    
         </div>
     );

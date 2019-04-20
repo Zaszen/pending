@@ -4,75 +4,72 @@ import { useState } from 'react';
 import Grid from '../Grid/Grid'
 
 const gridSize = 10;
-const bombNumber = 100; 
+const bombNumber = 20; 
 
-let cpt = 0;
-
-const arrayCreateGrid = () =>{
-    let tempGrid = [...Array(gridSize).fill("")].map(e => Array(gridSize).fill({exposed: false, value:"0"}));
-
-    //adding bomb
-    while(cpt < bombNumber){
-        let row = Math.floor(Math.random() * gridSize);
-        let col = Math.floor(Math.random() * gridSize);
-        if(tempGrid[col][row].value !== "X"){
-            tempGrid[col][row] = {exposed: false, value:"X"}
-            cpt++;
-        }
-    };
-
-    //adding number
-    for(let col=0; col < gridSize; col++){
-        for(let row=0; row < gridSize; row++){
-            if(tempGrid[col][row].value !== "X"){
-
-                let neighborNumber = 0;
-                
-                //8
-                if(row > 0)
-                    tempGrid[col][row-1].value === "X" && neighborNumber++;
-                
-                //9
-                if( col < gridSize-1 && row > 0 )    
-                    tempGrid[col+1][row-1].value === "X" && neighborNumber++;
-                
-                //6
-                if( col < gridSize-1) 
-                    tempGrid[col+1][row].value === "X" && neighborNumber++;
-
-                //3    
-                if( col < gridSize-1 && row < gridSize-1 )
-                    tempGrid[col+1][row+1].value === "X" && neighborNumber++;
-                
-                //2
-                if(row < gridSize-1)
-                    tempGrid[col][row+1].value === "X" && neighborNumber++;
-                
-                //1
-                if( col > 0 && row < gridSize-1)
-                    tempGrid[col-1][row+1].value === "X" && neighborNumber++;
-                
-                //4
-                if(col > 0)
-                    tempGrid[col-1][row].value === "X" && neighborNumber++;
-                
-                //7
-                if(col > 0 && row > 0)
-                    tempGrid[col-1][row-1].value === "X" && neighborNumber++;
-
-                tempGrid[col][row] = {exposed: false, value: neighborNumber.toString()};
-
-            }
-        }
-    }
-
-    return tempGrid;
-}
 
 const GridContainer = props => {
 
-    const [grid, setGrid] = useState([...arrayCreateGrid()]);
-    const [stateOfGame, setStateOfGame] = useState({victory: 0, defeat: 0, win: false, loss: false});
+    const arrayCreateGrid = () =>{
+        let tempGrid = [...Array(gridSize).fill("")].map(e => Array(gridSize).fill({exposed: false, value:"0"}));
+        let cpt = 0;
+        
+        //adding bomb
+        while(cpt < bombNumber){
+            let row = Math.floor(Math.random() * gridSize);
+            let col = Math.floor(Math.random() * gridSize);
+            if(tempGrid[col][row].value !== "X"){
+                tempGrid[col][row] = {exposed: false, value:"X"}
+                cpt++;
+            }
+        };
+    
+        //adding number
+        for(let col=0; col < gridSize; col++){
+            for(let row=0; row < gridSize; row++){
+                if(tempGrid[col][row].value !== "X"){
+    
+                    let neighborNumber = 0;
+                    
+                    //8
+                    if(row > 0)
+                        tempGrid[col][row-1].value === "X" && neighborNumber++;
+                    
+                    //9
+                    if( col < gridSize-1 && row > 0 )    
+                        tempGrid[col+1][row-1].value === "X" && neighborNumber++;
+                    
+                    //6
+                    if( col < gridSize-1) 
+                        tempGrid[col+1][row].value === "X" && neighborNumber++;
+    
+                    //3    
+                    if( col < gridSize-1 && row < gridSize-1 )
+                        tempGrid[col+1][row+1].value === "X" && neighborNumber++;
+                    
+                    //2
+                    if(row < gridSize-1)
+                        tempGrid[col][row+1].value === "X" && neighborNumber++;
+                    
+                    //1
+                    if( col > 0 && row < gridSize-1)
+                        tempGrid[col-1][row+1].value === "X" && neighborNumber++;
+                    
+                    //4
+                    if(col > 0)
+                        tempGrid[col-1][row].value === "X" && neighborNumber++;
+                    
+                    //7
+                    if(col > 0 && row > 0)
+                        tempGrid[col-1][row-1].value === "X" && neighborNumber++;
+    
+                    tempGrid[col][row] = {exposed: false, value: neighborNumber.toString()};
+    
+                }
+            }
+        }
+    
+        return tempGrid;
+    };
 
     const revealCell = (col, row) => {
 
@@ -92,7 +89,7 @@ const GridContainer = props => {
         setGrid(tempGrid);
     };
 
-    const propagateReveal = (grid, col, row) =>{
+    const propagateReveal = (grid, col, row) => {
 
         //8
         if(row > 0 && !grid[col][row-1].exposed){
@@ -143,13 +140,36 @@ const GridContainer = props => {
         }
     };
 
+    const playAgain = () => {
+        let tempStateOfGame = {...stateOfGame};
+
+        if (tempStateOfGame.loss){
+            tempStateOfGame.defeat++;
+            tempStateOfGame.loss = false
+        } else if (tempStateOfGame.win){
+            tempStateOfGame.victory++;
+            tempStateOfGame.win = false;
+        }
+
+        let newGrid = arrayCreateGrid();
+        
+        setStateOfGame(tempStateOfGame);
+        setGrid([...newGrid])
+    };
+
+    const [grid, setGrid] = useState([...arrayCreateGrid()]);
+    const [stateOfGame, setStateOfGame] = useState({victory: 0, defeat: 0, win: false, loss: false});
+
     return(
-        <Grid 
-            grid={grid}
-            revealCell={revealCell}
-            stateOfGame={stateOfGame}
-            setStateOfGame={setStateOfGame}
-        />  
+        <React.Fragment>
+            <Grid 
+                grid={grid}
+                revealCell={revealCell}
+                playAgain={playAgain}
+                stateOfGame={stateOfGame}
+            />    
+        </React.Fragment>
+          
     );
 }
 

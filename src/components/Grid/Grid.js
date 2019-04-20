@@ -35,8 +35,7 @@ const Grid = props =>{
                 {
                     (props.stateOfGame.win || props.stateOfGame.loss) ? 
                         <PopupMessage 
-                            stateOfGame={props.stateOfGame}
-                            setStateOfGame={props.setStateOfGame}
+                            playAgain={props.playAgain}
                         />
                     : 
                         null
