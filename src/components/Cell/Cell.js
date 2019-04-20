@@ -17,10 +17,11 @@ const Cell = React.memo(props =>{
         if(props.cell === "0"){
             cellClassName+= " empty"
         }
-        
+
         return cellClassName;
     }
-
+    // console.log("render cell col: " + props.col + ", row: " + props.row)
+    // console.log(" --> props:", props);
     return(
         <div 
             className={getCellClassName()} 

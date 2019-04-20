@@ -3,13 +3,13 @@ import { useState } from 'react';
 
 import Grid from '../Grid/Grid'
 
-const gridSize = 10;
-const bombNumber = 20; 
+const gridSize = 2;
+const bombNumber = 1; 
 
 
 const GridContainer = props => {
 
-    const arrayCreateGrid = () =>{
+    const newGrid = () =>{
         let tempGrid = [...Array(gridSize).fill("")].map(e => Array(gridSize).fill({exposed: false, value:"0"}));
         let cpt = 0;
         
@@ -87,6 +87,8 @@ const GridContainer = props => {
             
         }
         setGrid(tempGrid);
+        checkGridState();
+
     };
 
     const propagateReveal = (grid, col, row) => {
@@ -151,15 +153,23 @@ const GridContainer = props => {
             tempStateOfGame.win = false;
         }
 
-        let newGrid = arrayCreateGrid();
+        let newGrid = newGrid();
         
         setStateOfGame(tempStateOfGame);
         setGrid([...newGrid])
     };
 
-    const [grid, setGrid] = useState([...arrayCreateGrid()]);
+    const checkGridState = () => {
+        let tempGrid = [...grid];
+        let onlyBombLeft = tempGrid.some((col) =>{
+            col.some((cell)=>{
+                return cell.exposed && cell.value !== "X"
+            })
+        })
+        console.log("onlyBombLeft: ", onlyBombLeft);
+    }
+    const [grid, setGrid] = useState([...newGrid()]);
     const [stateOfGame, setStateOfGame] = useState({victory: 0, defeat: 0, win: false, loss: false});
-
     return(
         <React.Fragment>
             <Grid 
