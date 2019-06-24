@@ -6,16 +6,27 @@ require('./Cell.less');
 const Cell = React.memo(props =>{
 
     const handleClickCell = (col, row) =>{
-        if(props.cell == null){
+        if(props.value === null){
             props.revealCell(col, row);
         }
+    }
+
+    const handleRightClickCell = (e, col, row) =>{
+        if(props.value === null){
+            props.markCell(col, row);
+        }
+        e.preventDefault();
     }
 
     const getCellClassName = () =>{
         let cellClassName = "cell";
 
-        if(props.cell === "0"){
-            cellClassName+= " empty"
+        if(props.value === "0"){
+            cellClassName+= " empty";
+        }
+
+        if(props.isFlaged){
+            cellClassName+= " flaged";
         }
 
         return cellClassName;
@@ -26,9 +37,11 @@ const Cell = React.memo(props =>{
         <div 
             className={getCellClassName()} 
             onClick={()=>handleClickCell(props.col, props.row)}
+            onContextMenu={(e)=>handleRightClickCell(e, props.col, props.row)}
+
         >
             <div className="cell-content">
-                {props.cell !== "0" ? props.cell: ""}
+                {props.value !== "0" ? props.value: ""}
             </div>
         </div>    
     );

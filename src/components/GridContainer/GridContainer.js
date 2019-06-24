@@ -10,7 +10,7 @@ const bombNumber = 15;
 const GridContainer = props => {
 
     const newGrid = () =>{
-        let tempGrid = [...Array(gridSize).fill("")].map(e => Array(gridSize).fill({exposed: false, value:"0"}));
+        let tempGrid = [...Array(gridSize).fill("")].map(e => Array(gridSize).fill({exposed: false, value:"0", isFlaged: false}));
         let cpt = 0;
         
         //adding bomb
@@ -18,7 +18,7 @@ const GridContainer = props => {
             let row = Math.floor(Math.random() * gridSize);
             let col = Math.floor(Math.random() * gridSize);
             if(tempGrid[col][row].value !== "X"){
-                tempGrid[col][row] = {exposed: false, value:"X"}
+                tempGrid[col][row] = {exposed: false, value:"X", isFlaged: false}
                 cpt++;
             }
         };
@@ -62,7 +62,7 @@ const GridContainer = props => {
                     if(col > 0 && row > 0)
                         tempGrid[col-1][row-1].value === "X" && neighborNumber++;
     
-                    tempGrid[col][row] = {exposed: false, value: neighborNumber.toString()};
+                    tempGrid[col][row] = {exposed: false, value: neighborNumber.toString(), isFlaged: false};
     
                 }
             }
@@ -75,7 +75,7 @@ const GridContainer = props => {
 
         let tempGrid = [...grid];
         
-        tempGrid[col][row] = {exposed: true, value: tempGrid[col][row].value}; 
+        tempGrid[col][row] = {exposed: true, value: tempGrid[col][row].value, isFlaged: false}; 
 
         if (tempGrid[col][row].value === "0"){
             propagateReveal(tempGrid, col,row);
@@ -91,53 +91,61 @@ const GridContainer = props => {
 
     };
 
+    const markCell = (col, row) => {
+        let tempGrid = [...grid];
+        
+        tempGrid[col][row] = {exposed: false, value: tempGrid[col][row].value, isFlaged: true}; 
+
+        setGrid(tempGrid);
+    }
+
     const propagateReveal = (grid, col, row) => {
 
         //8
         if(row > 0 && !grid[col][row-1].exposed){
-            grid[col][row-1] = {exposed: true, value: grid[col][row-1].value};
+            grid[col][row-1] = {exposed: true, value: grid[col][row-1].value, isFlaged: false};
             grid[col][row-1].value === "0" && propagateReveal(grid, col, row-1);
         }
         
         //9
         if(col < gridSize-1 && row > 0 && !grid[col+1][row-1].exposed){
-            grid[col+1][row-1] = {exposed: true, value: grid[col+1][row-1].value};
+            grid[col+1][row-1] = {exposed: true, value: grid[col+1][row-1].value, isFlaged: false};
             grid[col+1][row-1].value === "0" && propagateReveal(grid, col+1, row-1);
         }    
         
         //6
         if(col < gridSize-1 && !grid[col+1][row].exposed){
-            grid[col+1][row] = {exposed: true, value: grid[col+1][row].value};
+            grid[col+1][row] = {exposed: true, value: grid[col+1][row].value, isFlaged: false};
             grid[col+1][row].value === "0" && propagateReveal(grid, col+1, row);
         }
 
         //3    
         if(col < gridSize-1 && row < gridSize-1 && !grid[col+1][row+1].exposed){
-            grid[col+1][row+1] = {exposed: true, value: grid[col+1][row+1].value};
+            grid[col+1][row+1] = {exposed: true, value: grid[col+1][row+1].value, isFlaged: false};
             grid[col+1][row+1].value === "0" && propagateReveal(grid, col+1, row+1);
         }
         
         //2
         if(row < gridSize-1 && !grid[col][row+1].exposed){
-            grid[col][row+1] = {exposed: true, value: grid[col][row+1].value}
+            grid[col][row+1] = {exposed: true, value: grid[col][row+1].value, isFlaged: false}
             grid[col][row+1].value === "0" && propagateReveal(grid, col, row+1);
         }
         
         //1
         if( col > 0 && row < gridSize-1 && !grid[col-1][row+1].exposed){
-            grid[col-1][row+1] = {exposed: true, value: grid[col-1][row+1].value};
+            grid[col-1][row+1] = {exposed: true, value: grid[col-1][row+1].value, isFlaged: false};
             grid[col-1][row+1].value === "0" && propagateReveal(grid, col-1, row+1);
         }
         
         //4
         if(col > 0 && !grid[col-1][row].exposed){
-            grid[col-1][row] = {exposed: true, value: grid[col-1][row].value};
+            grid[col-1][row] = {exposed: true, value: grid[col-1][row].value, isFlaged: false};
             grid[col-1][row].value === "0" && propagateReveal(grid, col-1, row);
         }
         
         //7
         if(col > 0 && row > 0 && !grid[col-1][row-1].exposed){
-            grid[col-1][row-1] = {exposed: true, value: grid[col-1][row-1].value};
+            grid[col-1][row-1] = {exposed: true, value: grid[col-1][row-1].value, isFlaged: false};
             grid[col-1][row-1].value === "0"  && propagateReveal(grid, col-1, row-1);
         }
     };
@@ -153,10 +161,10 @@ const GridContainer = props => {
             tempStateOfGame.win = false;
         }
 
-        let newGrid = newGrid();
+        let tempGrid = newGrid();
         
         setStateOfGame(tempStateOfGame);
-        setGrid([...newGrid])
+        setGrid([...tempGrid])
     };
 
     const checkGridState = () => {
@@ -181,6 +189,7 @@ const GridContainer = props => {
             <Grid 
                 grid={grid}
                 revealCell={revealCell}
+                markCell={markCell}
                 playAgain={playAgain}
                 stateOfGame={stateOfGame}
             />    

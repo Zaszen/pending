@@ -19,10 +19,12 @@ const Grid = props =>{
                                     return (
                                         <div key={"cell-col-"+colIndex+"-row"+rowIndex} >
                                             <Cell
-                                                cell={cell.exposed ? cell.value : null}
+                                                value={cell.exposed ? cell.value : null}
+                                                isFlaged={cell.isFlaged}
                                                 row={rowIndex}
                                                 col={colIndex}
                                                 revealCell={props.revealCell}
+                                                markCell={props.markCell}
                                             />
                                         </div>
                                     )
