@@ -94,10 +94,10 @@ const GridContainer = props => {
     const markCell = (col, row) => {
         let tempGrid = [...grid];
         
-        tempGrid[col][row] = {exposed: false, value: tempGrid[col][row].value, isFlaged: true}; 
+        tempGrid[col][row] = {exposed: false, value: tempGrid[col][row].value, isFlaged: !tempGrid[col][row].isFlaged}; 
 
         setGrid(tempGrid);
-    }
+    };
 
     const propagateReveal = (grid, col, row) => {
 
@@ -169,21 +169,30 @@ const GridContainer = props => {
 
     const checkGridState = () => {
         let tempGrid = [...grid];
-        let onlyBombLeft = tempGrid.some((col) =>{
-            col.some((cell)=>{
-                return cell.exposed && cell.value !== "X"
-            })
-        })
+        let onlyBombLeft = true;
+
+        for(let col=0; col < gridSize; col++){
+            for(let row=0; row < gridSize; row++){
+                if(tempGrid[col][row].value !== "X" && !tempGrid[col][row].exposed){
+                    onlyBombLeft = false;
+                    break;
+                }
+            }
+            if(!onlyBombLeft){
+                break;
+            }
+        }
 
         if(onlyBombLeft){
             let tempStateOfGame = {...stateOfGame};
             tempStateOfGame.win = true;
             setStateOfGame(tempStateOfGame);
         }
-        console.log("onlyBombLeft: ", onlyBombLeft);
-    }
+    };
+
     const [grid, setGrid] = useState([...newGrid()]);
     const [stateOfGame, setStateOfGame] = useState({victory: 0, defeat: 0, win: false, loss: false});
+    
     return(
         <React.Fragment>
             <Grid 
